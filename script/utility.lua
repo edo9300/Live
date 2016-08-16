@@ -1626,6 +1626,7 @@ function Auxiliary.AddKaijuLimitCondition(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_ADJUST)
 	e1:SetRange(LOCATION_MZONE)
+	e1:SetCondition(Auxiliary.KaijuCondition())
 	e1:SetOperation(Auxiliary.KaijuAdjustOperation())
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
@@ -1633,6 +1634,7 @@ function Auxiliary.AddKaijuLimitCondition(c)
 	e2:SetCode(EFFECT_CANNOT_SUMMON)
 	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e2:SetTargetRange(1,0)
+	e2:SetCondition(Auxiliary.KaijuCondition())
 	e2:SetTarget(Auxiliary.KaijuSummonLimit())
 	--c:RegisterEffect(e2)
 	local e3=e2:Clone()
@@ -1667,6 +1669,7 @@ function Auxiliary.AddKaijuLimitCondition(c)
 	e8:SetCode(EFFECT_SELF_DESTROY)
 	e8:SetRange(LOCATION_MZONE)
 	e8:SetTargetRange(LOCATION_MZONE,0)
+	e8:SetCondition(Auxiliary.KaijuCondition())
 	e8:SetTarget(Auxiliary.KaijuSDTarget())
 	c:RegisterEffect(e8)
 	local g=Group.CreateGroup()
@@ -1704,6 +1707,11 @@ function Auxiliary.KaijuAdjustOperation()
 		end
 	end
 end
+function Auxiliary.KaijuCondition()
+	return function(e)
+		return e:GetHandler():IsSetCard(0xd3)
+	end
+end
 function Auxiliary.KaijuSummonFilter(c)
 	return c:IsFaceup() and c:IsSetCard(0xd3)
 end
@@ -1716,7 +1724,7 @@ function Auxiliary.KaijuSummonLimit()
 end
 function Auxiliary.KaijuSummonLimit2()
 	return function(e)
-		return Duel.IsExistingMatchingCard(Auxiliary.KaijuSummonFilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
+		return Duel.IsExistingMatchingCard(Auxiliary.KaijuSummonFilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil) and e:GetHandler():IsSetCard(0xd3)
 	end
 end
 function Auxiliary.KaijuSDTarget()
